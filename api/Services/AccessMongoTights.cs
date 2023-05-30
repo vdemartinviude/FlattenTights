@@ -18,13 +18,13 @@ public class AccessMongoTights
     private readonly IMongoCollection<Tight> _tightsCollection;
     private readonly ILogger<AccessMongoTights> _logger;
     private readonly FlatService _flattenService;
-    public AccessMongoTights(ILogger<AccessMongoTights> logger, IOptions<TightsStorageDatabaseSettings> tightStoreDatabaseSettings, FlatService flattenService)
+    public AccessMongoTights(ILogger<AccessMongoTights> logger, IConfiguration configuration, FlatService flattenService)
     {
 
         _logger = logger;
-        var mongoclient = new MongoClient(tightStoreDatabaseSettings.Value.ConnectionString);
-        var mongoDatabase = mongoclient.GetDatabase(tightStoreDatabaseSettings.Value.DatabaseName);
-        _tightsCollection = mongoDatabase.GetCollection<Tight>(tightStoreDatabaseSettings.Value.TightsCollectionName);
+        var mongoclient = new MongoClient(configuration.GetValue<string>("MONGODBCONNECTIONSTRING"));
+        var mongoDatabase = mongoclient.GetDatabase(configuration.GetValue<string>("MONGODBDATABASE"));
+        _tightsCollection = mongoDatabase.GetCollection<Tight>(configuration.GetValue<string>("MONGODBTIGHTSCOLLECTION")); 
 
         _logger.LogInformation("Mongo Connected");
         _flattenService = flattenService;
@@ -120,6 +120,11 @@ public class AccessMongoTights
         await cursor.MoveNextAsync();        
 
         return _flattenService.Flat(cursor.Current);
+    }
+
+    internal Task<IEnumerable<FlattenTight>> GetFlatten3(FlattenDataRequest request, CancellationToken token)
+    {
+        throw new NotImplementedException();
     }
 
     internal async Task<IEnumerable<FlattenTight>> GetFlattenTights(CancellationToken cancellation)

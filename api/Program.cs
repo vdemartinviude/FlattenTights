@@ -2,10 +2,12 @@ using api.ConfigOptions;
 using api.FlattenService;
 using api.Mapster;
 using api.Services;
+using DotNetEnv;
+using DotNetEnv.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.Configure<TightsStorageDatabaseSettings>(builder.Configuration.GetSection("TightsStoreDatabase"));
+builder.Configuration.AddDotNetEnv(".env",LoadOptions.TraversePath());
 // Add services to the container.
 
 builder.Services.AddControllers();

@@ -21,6 +21,18 @@ public class FlatService
                                  step => {
                                      
                                      var time = DateTime.ParseExact(resp.Message.response.timeStatus, "dd-MM-yyyy HH:mm:ss.fff", new CultureInfo("pt-br"));
+                                     var actualAngle = step.parameterList.SingleOrDefault(x => x.parameter == "WI")?.value ?? null;
+                                     var lowerAngle = step.parameterList.SingleOrDefault(x => x.parameter == "W_LOWER")?.value ?? null;
+                                     var upperAngle = step.parameterList.SingleOrDefault(x => x.parameter == "W_UPPER")?.value ?? null;
+                                     var actualTorque = step.parameterList.SingleOrDefault(x => x.parameter == "MI")?.value ?? null;
+                                     var lowerTorque = step.parameterList.SingleOrDefault(x => x.parameter == "MA")?.value ?? null;
+                                     string reap = "OK";
+                                     if (actualAngle != null && lowerAngle != null && actualAngle < lowerAngle)
+                                        reap = "NOK";
+                                     string estr = "OK";
+                                     if (actualAngle != null && actualAngle > upperAngle && actualTorque != null && lowerTorque != null && actualTorque < lowerTorque)
+                                        estr = "NOK";
+                                     
                                      return new FlattenTight
                                      {
                                          deviceId = resp.Message.response.deviceId,
@@ -58,7 +70,9 @@ public class FlatService
                                          UpperAngleTolerance = step.parameterList.SingleOrDefault(x => x.parameter == "W_UPPER")?.value ?? null,
                                          UpperTimeTolerance = step.parameterList.SingleOrDefault(x => x.parameter == "T_UPPER")?.value ?? null,
                                          UpperTorqueLimit = step.parameterList.SingleOrDefault(x => x.parameter == "MO")?.value ?? null,
-                                         UpperTorqueTolerance = step.parameterList.SingleOrDefault(x => x.parameter == "M_UPPER")?.value ?? null
+                                         UpperTorqueTolerance = step.parameterList.SingleOrDefault(x => x.parameter == "M_UPPER")?.value ?? null,
+                                         reaperto = reap,
+                                         estrategia = estr
 
 
                                      };

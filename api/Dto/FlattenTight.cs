@@ -8,6 +8,8 @@ public class FlattenTight
     public DateTime timeStatus { get; set; }
     public TimeOnly time { get; set; }
     public string globalStatus { get; set; }
+    public string reaperto { get; set; }
+    public string estrategia { get; set; }
     public DateOnly date { get; set; }
     public bool multiple { get; set; }
     public string partNumber { get; set; }
